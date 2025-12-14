@@ -4591,9 +4591,9 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** DISABLE: JTAG-DP Disabled and SW-DP Disabled
+  /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
   */
-  __HAL_AFIO_REMAP_SWJ_DISABLE();
+  __HAL_AFIO_REMAP_SWJ_NOJTAG();
  8001d26:	4b0a      	ldr	r3, [pc, #40]	; (8001d50 <HAL_MspInit+0x60>)
  8001d28:	685b      	ldr	r3, [r3, #4]
  8001d2a:	60fb      	str	r3, [r7, #12]
@@ -4601,7 +4601,7 @@ void HAL_MspInit(void)
  8001d2e:	f023 63e0 	bic.w	r3, r3, #117440512	; 0x7000000
  8001d32:	60fb      	str	r3, [r7, #12]
  8001d34:	68fb      	ldr	r3, [r7, #12]
- 8001d36:	f043 6380 	orr.w	r3, r3, #67108864	; 0x4000000
+ 8001d36:	f043 7300 	orr.w	r3, r3, #33554432	; 0x2000000
  8001d3a:	60fb      	str	r3, [r7, #12]
  8001d3c:	4a04      	ldr	r2, [pc, #16]	; (8001d50 <HAL_MspInit+0x60>)
  8001d3e:	68fb      	ldr	r3, [r7, #12]
