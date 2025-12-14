@@ -39,3 +39,12 @@
 
 # debug information files
 *.dwo
+
+# build files
+*.aux
+*.bbl
+*.log
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
