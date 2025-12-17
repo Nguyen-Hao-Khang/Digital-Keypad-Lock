@@ -101,9 +101,8 @@ static void format_password_display(void)
 static void MapStateToVisuals(void)
 {
     // Default Actuator States (Safety First)
-
     char tempStr[17];
-
+	gOutputStatus.inLength = strlen(inputBuffer);
     switch (gSystemState.currentState) {
         case LOCKED_SLEEP:
             center_text(gOutputStatus.lcdLine1, " ");
@@ -124,7 +123,7 @@ static void MapStateToVisuals(void)
         case LOCKED_VERIFY:
             // Display static error messages based on input buffer analysis
             // The state stays here for 3s (controlled by FSM timer)
-            if (strlen(inputBuffer) < PASSWORD_LENGTH || strlen(inputBuffer) > MAX_INPUT_LENGTH) {
+            if (strlen(inputBuffer) < (PASSWORD_LENGTH) || strlen(inputBuffer) > (MAX_INPUT_LENGTH)) {
                 center_text(gOutputStatus.lcdLine1, "Input string");
                 center_text(gOutputStatus.lcdLine2, "format error");
             } else {
@@ -208,6 +207,10 @@ void Output_Init(void)
 
 void Output_Process(void)
 {
+	if (gInputState.keySensor == 1 || gInputState.indoorButton == 1){
+		strcpy(gOutputStatus.lcdLine2," ERROR INIT");
+		HAL_Delay(3000);
+	}
 	// 1. Determine what to show based on State
 	if (timer_counter[DOOR_NOTIFY_TIMER_ID] > 0)
 	{

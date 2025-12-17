@@ -193,7 +193,9 @@ void State_Process(void) {
                 // Case C: Wrong Password
                 else {
                     gSystemTimers.failedAttempts++;
-                    input_clear();
+                    isShowingError = true;
+                    setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
+//                    input_clear();
 
                     // Check Modulo 3
                     if ((gSystemTimers.failedAttempts % 3) == 0)

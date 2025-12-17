@@ -12,16 +12,16 @@
 #include "global.h"
 
 // --- Static variables for edge detection ---
-static char last_keypad_char = 0;
-static uint8_t last_enter_state = 0;
-static uint8_t last_backspace_state = 0;
-static uint8_t last_door_btn_state = 0;
+//static char last_keypad_char;
+//static uint8_t last_enter_state;
+//static uint8_t last_backspace_state;
+//static uint8_t last_door_btn_state;
 
 void Input_Init(void) {
     last_keypad_char = 0;
     last_enter_state = 0;
     last_backspace_state = 0;
-    last_door_btn_state = 0;
+    last_door_btn_state = 1;
 }
 
 void Input_Process(void) {

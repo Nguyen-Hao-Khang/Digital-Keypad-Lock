@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
- ******************************************************************************
- * @file : main.c
- * @brief : Main program body
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; Copyright (c) 2025 STMicroelectronics.
- * All rights reserved.</center></h2>
- *
- * This software component is licensed by ST under BSD 3-Clause license,
- * the "License"; You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at:
- * opensource.org/licenses/BSD-3-Clause
- *
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.</center></h2>
+  *
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
+  *
+  ******************************************************************************
+  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -40,7 +40,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -60,15 +59,15 @@ TIM_HandleTypeDef htim2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+I2C_LCD_HandleTypeDef lcd1;
 /* USER CODE END 0 */
 
 /**
@@ -99,54 +98,53 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM2_Init();
   MX_I2C1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-	HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htim2);
+  // LCD Driver
+  lcd1.hi2c = &hi2c1;     // I2C from MX
+  lcd1.address = (0x27 <<1);
+  lcd_init(&lcd1);
+  lcd_clear(&lcd1);
 
-	// LCD Driver
-	lcd1.hi2c = &hi2c1;     // I2C from MX
-	lcd1.address = 0x27;
-	lcd_init(&lcd1);
-	lcd_clear(&lcd1);
+  // Global Variables
+  init_global_variables();
 
-	// Global Variables
-	init_global_variables();
+  // Khởi tạo Scheduler
+  SCH_Init();
 
-	// Khởi tạo Scheduler
-	SCH_Init();
+  // Khởi tạo Keypad Driver
+  Keypad_Init(&hKeypad, KEYMAP,
+		  	  COL1_GPIO_Port, COL1_Pin,
+			  COL2_GPIO_Port, COL2_Pin,
+			  COL3_GPIO_Port, COL3_Pin,
+			  COL4_GPIO_Port, COL4_Pin,
+			  ROW1_GPIO_Port, ROW1_Pin,
+			  ROW2_GPIO_Port, ROW2_Pin,
+			  ROW3_GPIO_Port, ROW3_Pin,
+			  ROW4_GPIO_Port, ROW4_Pin);
 
-	// Khởi tạo Keypad Driver
-	Keypad_Init(&hKeypad, KEYMAP,
-				COL1_GPIO_Port, COL1_Pin,
-				COL2_GPIO_Port, COL2_Pin,
-				COL3_GPIO_Port, COL3_Pin,
-				COL4_GPIO_Port, COL4_Pin,
-				ROW1_GPIO_Port, ROW1_Pin,
-				ROW2_GPIO_Port, ROW2_Pin,
-				ROW3_GPIO_Port, ROW3_Pin,
-				ROW4_GPIO_Port, ROW4_Pin);
-
-	// Logic Modules Initialization
-	Input_Init();
-	Output_Init();
-	State_Init();
-
-	SCH_Add_Task(button_reading, 0, 10);
-	SCH_Add_Task(Input_Process,  1, 10);
-	SCH_Add_Task(State_Process,  2, 10);
-	SCH_Add_Task(Output_Process, 3, 20);
+  // Logic Modules Initialization
+  Input_Init();
+  Output_Init();
+  State_Init();
+  SCH_Add_Task(button_reading, 0, 10);
+  SCH_Add_Task(Input_Process,  0, 10);
+  SCH_Add_Task(State_Process,  0, 10);
+  SCH_Add_Task(Output_Process, 0, 10);
+  SCH_Add_Task(timerRun, 0, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	while (1)
-	{
-		SCH_Dispatch_Tasks();
+  while (1)
+  {
     /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-	}
+	  SCH_Dispatch_Tasks();
+	/* USER CODE BEGIN 3 */
+  }
   /* USER CODE END 3 */
 }
 
@@ -321,7 +319,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	SCH_Update();
-	timerRun();
 }
 /* USER CODE END 4 */
 
@@ -332,11 +329,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-	__disable_irq();
-	while (1)
-	{
-	}
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -351,8 +348,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-	/* User can add his own implementation to report the file name and line number,
-	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

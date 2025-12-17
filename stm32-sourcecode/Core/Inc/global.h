@@ -73,6 +73,10 @@ typedef struct {
     uint8_t batteryLow;      // 1 = Low Battery
 } InputState_t;
 extern InputState_t gInputState;
+extern char last_keypad_char;
+extern uint8_t last_enter_state;
+extern uint8_t last_backspace_state;
+extern uint8_t last_door_btn_state;
 
 /* Key Event Mailbox: Keypad & Discrete Action Buttons */
 typedef struct {
@@ -95,6 +99,7 @@ typedef struct {
     Buzzer_t buzzer;
     char lcdLine1[17];
     char lcdLine2[17];
+    size_t inLength; //length of password read
 } OutputStatus_t;
 extern OutputStatus_t gOutputStatus;
 

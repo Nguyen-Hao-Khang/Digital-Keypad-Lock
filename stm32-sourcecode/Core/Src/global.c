@@ -12,7 +12,6 @@
 #include <string.h>
 
 Keypad_HandleTypeDef hKeypad;
-I2C_LCD_HandleTypeDef lcd1;
 
 // Keymap 4x4 definition
 char KEYMAP[NUMROWS][NUMCOLS] = {
@@ -34,7 +33,10 @@ char inputBuffer[MAX_INPUT_LENGTH + 1];
 int timer_counter[NUM_TASKS];
 int timer_flag[NUM_TASKS];
 int TIMER_CYCLE = 10;
-
+char last_keypad_char;
+uint8_t last_enter_state;
+uint8_t last_backspace_state;
+uint8_t last_door_btn_state;
 void init_global_variables(void)
 {
     // Input
@@ -63,7 +65,7 @@ void init_global_variables(void)
 
     // Default Password: 1234
     strcpy(gPassword, "1234");
-    inputBuffer[0] = '\0';
+//    inputBuffer[0] = '\0';
 }
 
 #endif /* SRC_GLOBAL_C_ */
