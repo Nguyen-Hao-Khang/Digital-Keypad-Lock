@@ -35,37 +35,37 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := Digital-Keypad-Lock
+BUILD_ARTIFACT_NAME := TKLL
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-Digital-Keypad-Lock.elf \
+TKLL.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-Digital-Keypad-Lock.list \
+TKLL.list \
 
 OBJCOPY_HEX += \
-Digital-Keypad-Lock.hex \
+TKLL.hex \
 
 OBJCOPY_BIN += \
-Digital-Keypad-Lock.bin \
+TKLL.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: Digital-Keypad-Lock.elf secondary-outputs
+main-build: TKLL.elf secondary-outputs
 
 # Tool invocations
-Digital-Keypad-Lock.elf: $(OBJS) $(USER_OBJS) C:\Users\nguye\OneDrive\Desktop\Current\ courses\Logic\ Design\ Project\Implement\Digital-Keypad-Lock\stm32-sourcecode\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Digital-Keypad-Lock.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\nguye\OneDrive\Desktop\Current courses\Logic Design Project\Implement\Digital-Keypad-Lock\stm32-sourcecode\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Digital-Keypad-Lock.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+TKLL.elf: $(OBJS) $(USER_OBJS) D:\TKLL\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "TKLL.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\TKLL\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TKLL.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -74,24 +74,24 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Digital-Keypad-Lock.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Digital-Keypad-Lock.list"
+TKLL.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "TKLL.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Digital-Keypad-Lock.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "Digital-Keypad-Lock.hex"
+TKLL.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "TKLL.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Digital-Keypad-Lock.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "Digital-Keypad-Lock.bin"
+TKLL.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "TKLL.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJCOPY_HEX)$(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(OBJS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS)$(OBJCOPY_BIN) Digital-Keypad-Lock.elf
+	-$(RM) $(OBJCOPY_HEX)$(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(OBJS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS)$(OBJCOPY_BIN) TKLL.elf
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
