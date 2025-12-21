@@ -10,7 +10,8 @@
 #include "input_reading.h"
 #include "keypad.h"
 #include "global.h"
-
+#include "i2c_lcd.h"
+#include <string.h>
 // --- Static variables for edge detection ---
 //static char last_keypad_char;
 //static uint8_t last_enter_state;

@@ -50,7 +50,6 @@ static void input_backspace(void) {
 
 /* Verify password using KMP */
 static bool verify_password(void) {
-    if (inputLen < PASSWORD_LENGTH) return false;
     return KMP_FindPassword((const uint8_t*)inputBuffer, (uint16_t)inputLen);
 }
 
@@ -107,30 +106,46 @@ void State_Process(void) {
 
     switch (gSystemState.currentState) {
         case LOCKED_SLEEP:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_OFF;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // Any Key -> Wakeup
             if (gKeyEvent.keyChar != 0)
             {
                 gSystemState.currentState = LOCKED_WAKEUP;
                 gKeyEvent.keyChar = 0;
+                setTimer(MASK_TIMER_ID, 1000);
             }
             break;
 
         case LOCKED_WAKEUP:
         	// Ensuring entry safety
         	input_clear();
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Check Battery
-            if (gInputState.batteryLow)
-            {
-                gSystemState.currentState = BATTERY_WARNING;
-                setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
-            } else {
-                gSystemState.currentState = LOCKED_ENTRY;
-                setTimer(ENTRY_TIMEOUT_ID, TIMEOUT_30S_CYCLES);
-            }
+        	if (timer_flag[MASK_TIMER_ID] == 1){
+				if (gInputState.batteryLow)
+				{
+					gSystemState.currentState = BATTERY_WARNING;
+					setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
+				} else {
+					gSystemState.currentState = LOCKED_ENTRY;
+					setTimer(ENTRY_TIMEOUT_ID, TIMEOUT_30S_CYCLES);
+				}
+        	}
             break;
 
         case BATTERY_WARNING:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions: After 3s -> Locked Entry
             if (timer_flag[WARNING_TASK_ID] == 1)
             {
@@ -140,6 +155,11 @@ void State_Process(void) {
             break;
 
         case LOCKED_ENTRY:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // 1. Timeout 30s -> Sleep
             if (timer_flag[ENTRY_TIMEOUT_ID] == 1)
@@ -169,6 +189,11 @@ void State_Process(void) {
             break;
 
         case LOCKED_VERIFY:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Logic: Check password
             // If just entered state (isShowingError == false)
             if (!isShowingError)
@@ -232,6 +257,11 @@ void State_Process(void) {
             break;
 
         case PENALTY_TIMER:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            // gOutputStatus.buzzer = BUZZER_OFF;
             // Logic: Wait for penalty end
             // 1. Buzzer timeout (10s)
             if (timer_flag[BUZZER_TASK_ID] == 1)
@@ -248,6 +278,11 @@ void State_Process(void) {
             break;
 
         case PERMANENT_LOCKOUT:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            // gOutputStatus.buzzer = BUZZER_OFF;
             // Logic: Infinite loop until Master Key (Handled in Global Overrides)
             // Buzzer timeout
             if (timer_flag[BUZZER_TASK_ID] == 1)
@@ -257,6 +292,11 @@ void State_Process(void) {
             break;
 
         case UNLOCKED_WAITOPEN:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_UNLOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_ON;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // 1. Door Opens -> DoorOpen
             if (gInputState.doorSensor == 0)
@@ -268,6 +308,7 @@ void State_Process(void) {
             else if (timer_flag[UNLOCK_WINDOW_ID] == 1)
             {
                 gSystemState.currentState = LOCKED_RELOCK;
+                setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
             }
             // 3. Enter Long Press -> Set Password
             else if (gKeyEvent.isEnterLong)
@@ -280,6 +321,11 @@ void State_Process(void) {
             break;
 
         case UNLOCKED_SETPASSWORD:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_UNLOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_ON;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Logic: Input new password
             // 1. Timeout 30s -> WaitOpen
             if (timer_flag[ENTRY_TIMEOUT_ID] == 1)
@@ -294,6 +340,7 @@ void State_Process(void) {
                 {
                     State_SetPassword(inputBuffer); // Update global password
                     gSystemState.currentState = LOCKED_RELOCK;
+                    setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
                 } else {
                     gSystemState.currentState = UNLOCKED_WAITOPEN;
                     setTimer(UNLOCK_WINDOW_ID, TIMEOUT_10S_CYCLES);
@@ -320,6 +367,11 @@ void State_Process(void) {
             break;
 
         case UNLOCKED_DOOROPEN:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_UNLOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_ON;
+            // gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // 1. Door Closes -> WaitClose
             if (gInputState.doorSensor == 1)
@@ -345,6 +397,11 @@ void State_Process(void) {
             break;
 
         case ALARM_FORGOTCLOSE:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_UNLOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_ON;
+            // gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // 1. Door Closes -> WaitClose
             if (gInputState.doorSensor == 1)
@@ -365,9 +422,20 @@ void State_Process(void) {
                 gOutputStatus.buzzer = BUZZER_ON;
                 setTimer(BUZZER_TASK_ID, TIMEOUT_10S_CYCLES);
             }
+            // 4. Long press indoor unlock button -> UNLOCK_ALWAYSOPEN
+			if (gInputState.indoorButtonLong)
+			{
+				gSystemState.currentState = UNLOCKED_ALWAYSOPEN;
+				gInputState.indoorButtonLong = 0;
+			}
             break;
 
         case UNLOCKED_WAITCLOSE:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_UNLOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_ON;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // 1. Door Opens again -> DoorOpen
             if (gInputState.doorSensor == 0)
@@ -378,11 +446,17 @@ void State_Process(void) {
             // 2. Timeout 10s -> Relock
             else if (timer_flag[UNLOCK_WINDOW_ID] == 1)
             {
+            	setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
                 gSystemState.currentState = LOCKED_RELOCK;
             }
             break;
 
         case UNLOCKED_ALWAYSOPEN:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_UNLOCKED;
+            gOutputStatus.ledRed = LED_OFF;
+            gOutputStatus.ledGreen = LED_ON;
+            // gOutputStatus.buzzer = BUZZER_OFF;
             // Transitions:
             // 1. Door Closes -> WaitClose (As per user logic)
             if (gInputState.doorSensor == 1)
@@ -393,14 +467,14 @@ void State_Process(void) {
             break;
 
         case LOCKED_RELOCK:
+        	// Do:
+            gOutputStatus.solenoid = SOLENOID_LOCKED;
+            gOutputStatus.ledRed = LED_ON;
+            gOutputStatus.ledGreen = LED_OFF;
+            gOutputStatus.buzzer = BUZZER_OFF;
             // Logic: Wait 3s then Sleep
             // Note: Reuse WARNING timer for 3s delay
-            if (timer_flag[WARNING_TASK_ID] == 0 && timer_counter[WARNING_TASK_ID] == 0)
-            {
-                // First entry into state: Set timer
-                 setTimer(WARNING_TASK_ID, TIMEOUT_3S_CYCLES);
-            }
-            else if (timer_flag[WARNING_TASK_ID] == 1)
+            if (timer_flag[WARNING_TASK_ID] == 1)
             {
                 gSystemState.currentState = LOCKED_SLEEP;
             }

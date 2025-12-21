@@ -10,7 +10,7 @@
 
 #include "main.h"
 #include "global.h"
-
+void input_reading_init(void);
 void button_reading(void);
 unsigned int is_button_pressed(unsigned int index);
 unsigned int is_button_pressed_1s(unsigned int index);

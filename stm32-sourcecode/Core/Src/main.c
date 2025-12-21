@@ -127,13 +127,14 @@ int main(void)
 
   // Logic Modules Initialization
   Input_Init();
+  input_reading_init();
   Output_Init();
   State_Init();
-  SCH_Add_Task(timerRun, 0, 10);
-  SCH_Add_Task(button_reading, 0, 10);
-  SCH_Add_Task(Input_Process,  0, 10);
-  SCH_Add_Task(State_Process,  1, 10);
-  SCH_Add_Task(Output_Process, 2, 10);
+//  SCH_Add_Task(timerRun, 0, 1);
+  SCH_Add_Task(button_reading, 0, 1);
+  SCH_Add_Task(Input_Process,  0, 1);
+  SCH_Add_Task(State_Process,  1, 1);
+  SCH_Add_Task(Output_Process, 2, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -141,8 +142,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  SCH_Dispatch_Tasks();
 
+	  SCH_Dispatch_Tasks();
 	/* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -319,6 +320,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	SCH_Update();
+	timerRun();
 }
 /* USER CODE END 4 */
 

@@ -2,7 +2,7 @@ state_processing.c:30:13:input_clear	4	static
 state_processing.c:36:13:input_append	16	static
 state_processing.c:44:13:input_backspace	4	static
 state_processing.c:52:13:verify_password	8	static
-state_processing.c:58:13:activate_penalty	24	static
-state_processing.c:70:6:State_Init	8	static
-state_processing.c:77:6:State_Process	16	static
-state_processing.c:416:6:State_SetPassword	16	static
+state_processing.c:57:13:activate_penalty	24	static
+state_processing.c:69:6:State_Init	8	static
+state_processing.c:76:6:State_Process	16	static
+state_processing.c:490:6:State_SetPassword	16	static

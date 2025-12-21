@@ -95,5 +95,3 @@ uint8_t SCH_Delete_Task(const uint8_t index)
     SCH_task_count--;
     return RETURN_NORMAL;
 }
-
-

@@ -19,7 +19,15 @@ static uint8_t flagForButtonPress1s[N0_OF_BUTTONS];
 //after the button is pressed more than 1 second.
 static uint16_t counterForButtonPress1s[N0_OF_BUTTONS];
 
-
+void input_reading_init(void){
+	for (int i = 0; i < N0_OF_BUTTONS; i++) {
+		buttonBuffer[i] = GPIO_PIN_SET;          // Mặc định là NHẢ (Release)
+		debounceButtonBuffer1[i] = GPIO_PIN_SET;
+		debounceButtonBuffer2[i] = GPIO_PIN_SET;
+		flagForButtonPress1s[i] = 0;
+		counterForButtonPress1s[i] = 0;
+	}
+}
 GPIO_PinState read_button(int index)
 {
     switch (index)
