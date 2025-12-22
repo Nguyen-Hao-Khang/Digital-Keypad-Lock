@@ -9,6 +9,7 @@ Dự án tập trung vào ba mục tiêu cốt lõi:
 
 ## Sơ đồ nguyên lý dự án
 <img width="4041" height="2841" alt="digital_keypad_lock_schematic" src="https://github.com/user-attachments/assets/89ed94a1-0589-4845-8221-3b82bba56657" />
+
 *Lưu ý:* sản phẩm thực tế không sử dụng **buzzer 12.0V** nên không cần sử dụng relay cho thiết bị này.
 ---
 
