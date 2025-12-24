@@ -14,7 +14,7 @@ xử lý thuật toán xác thực và phát lệnh điều khiển đến các 
 
 Khi nhập mật khẩu, vi điều khiển nhận chuỗi ký tự từ bàn phím, sau đó thực hiện tìm kiếm mật khẩu thực liên tục 
 trong chuỗi dữ liệu nhập vào bằng thuật toán xác thực và kích hoạt cơ cấu mở khóa nếu nội dung được kiểm tra là chính xác. Trong trường hợp người 
-dùng sử dụng phương thức mở khóa bằng chìa cơ, vi điều khiển sẽ đọc trạng thái từ microswitch gắn với ổ khóa cơ học để thực hiện hành động tương ứng để mở khóa.
+dùng sử dụng phương thức mở khóa bằng chìa cơ, vi điều khiển sẽ đọc trạng thái từ button gắn với ổ khóa cơ học để thực hiện hành động tương ứng để mở khóa.
 
 Sau khi nhập mật khẩu, đơn vị xử lý trung tâm sẽ phát lệnh điều khiển đến các thiết bị đầu ra: màn hình hiển thị, còi báo động
 và relay kích hoạt solenoid ứng với từng trạng thái hoạt động của hệ thống như: tiến hành mở khóa khi đã nhập đúng;
@@ -26,7 +26,7 @@ quản lý các thông số vận hành cần thiết.
 \begin{itemize}
     \item Bàn phím ma trận kích thước 4 $\times$ 4 cho phép người dùng nhập mật khẩu và các lệnh điều khiển thông qua các 
         phím số từ "0" đến "9" và các ký tự chữ cái từ “A” đến “F”, cùng với hai nút bấm rời hiện thực nút "Delete" và "Enter".
-    \item Một microswitch cơ học được lắp đặt tại vị trí ổ khóa cơ có chức năng phát hiện và thông báo cho MCU khi 
+    \item Một button cơ học được lắp đặt tại vị trí ổ khóa cơ có chức năng phát hiện và thông báo cho MCU khi 
         người dùng thực hiện thao tác mở khóa bằng chìa khóa truyền thống. 
     \item Nút bấm được gắn ở mặt trong của cửa, khi được kích hoạt sẽ truyền tín hiệu mở khóa đến MCU. 
 \end{itemize}
@@ -45,7 +45,7 @@ quản lý các thông số vận hành cần thiết.
     \item Solenoid yêu cầu nguồn cấp có công suất lớn hơn khả năng cung cấp trực tiếp của MCU, 
         vi điều khiển sẽ điều khiển solenoid gián tiếp thông qua một relay trung gian, tín hiệu điều khiển mức 
         logic 5V từ chân GPIO của MCU kích hoạt cuộn dây relay.
-    \item Về phần cảm biến, hệ thống sử dụng một microswitch cảm biến trạng thái cửa nhận biết vị trí đóng hoặc mở 
+    \item Về phần cảm biến, hệ thống sử dụng một button cảm biến trạng thái cửa nhận biết vị trí đóng hoặc mở 
         của cánh cửa và gửi về MCU, phục vụ cho thao tác cảnh báo người dùng.
 \end{itemize}
 \subsection{Khối quản lý năng lượng:}
